@@ -113,7 +113,7 @@ permissions:
   contents: read
 
 steps:
-  - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+  - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
   - name: Enforce experiment gate
     uses: Pipeliner/hypothesisctl@1722321620d8c297562bcf20ec1bd63057407df1 # v0.2.0 action
     with:
