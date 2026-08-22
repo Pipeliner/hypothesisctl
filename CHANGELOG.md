@@ -4,6 +4,8 @@ All notable changes are documented here.
 
 ## Unreleased
 
+- Run the composite Action through an isolated bundled entry point so an
+  untrusted checkout cannot shadow the pinned `hypothesisctl` package.
 - Add a tested AI-agent completion example that stays `BLOCKED` until an
   independent review exists, with explicit zero-result coverage.
 - Put the dependency-free GitHub Action path into the first-use README flow.

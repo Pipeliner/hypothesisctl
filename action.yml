@@ -28,7 +28,7 @@
           "HYPOTHESISCTL_POLICY": "${{ inputs.policy }}",
           "HYPOTHESISCTL_FORMAT": "${{ inputs.format }}"
         },
-        "run": "PYTHONPATH=\"$GITHUB_ACTION_PATH/src\" python3 -m hypothesisctl check \"$HYPOTHESISCTL_RECORD\" --policy \"$HYPOTHESISCTL_POLICY\" --format \"$HYPOTHESISCTL_FORMAT\""
+        "run": "python3 -I \"$GITHUB_ACTION_PATH/action_entrypoint.py\" check \"$HYPOTHESISCTL_RECORD\" --policy \"$HYPOTHESISCTL_POLICY\" --format \"$HYPOTHESISCTL_FORMAT\""
       }
     ]
   },

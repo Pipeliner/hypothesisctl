@@ -55,7 +55,9 @@ class CompositeActionTest(unittest.TestCase):
             {"HYPOTHESISCTL_RECORD", "HYPOTHESISCTL_POLICY", "HYPOTHESISCTL_FORMAT"},
         )
         command = step["run"]
-        self.assertIn('PYTHONPATH="$GITHUB_ACTION_PATH/src"', command)
+        self.assertIn('python3 -I "$GITHUB_ACTION_PATH/action_entrypoint.py"', command)
+        self.assertNotIn("PYTHONPATH", command)
+        self.assertNotIn("-m hypothesisctl", command)
         self.assertIn('"$HYPOTHESISCTL_RECORD"', command)
         self.assertIn('"$HYPOTHESISCTL_POLICY"', command)
         self.assertIn('"$HYPOTHESISCTL_FORMAT"', command)
@@ -78,6 +80,27 @@ class CompositeActionTest(unittest.TestCase):
             path.write_text(json.dumps(record()), encoding="utf-8")
             result = self.run_action(path, f"launch; touch {sentinel}")
             self.assertEqual(result.returncode, 3)
+            self.assertFalse(sentinel.exists())
+
+    def test_action_does_not_import_checkout_shadow_package(self):
+        with tempfile.TemporaryDirectory(prefix="hypothesisctl action shadow ") as directory:
+            checkout = Path(directory)
+            path = checkout / "experiment.json"
+            sentinel = checkout / "checkout-module-executed"
+            shadow = checkout / "hypothesisctl"
+            shadow.mkdir()
+            (shadow / "__init__.py").write_text("", encoding="utf-8")
+            (shadow / "__main__.py").write_text(
+                "from pathlib import Path\n"
+                f"Path({str(sentinel)!r}).write_text('executed', encoding='utf-8')\n",
+                encoding="utf-8",
+            )
+            path.write_text(json.dumps(record()), encoding="utf-8")
+
+            result = self.run_action(path, "launch")
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(json.loads(result.stdout)["decision"], "CONTINUE")
             self.assertFalse(sentinel.exists())
 
 

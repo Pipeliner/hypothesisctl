@@ -153,8 +153,10 @@ steps:
       format: json
 ```
 
-The Action runs the bundled source directly. It does not install dependencies,
-resolve evidence, use the network, or interpolate inputs into shell code.
+The Action runs the bundled source through Python isolated mode, so modules in
+the consumer checkout, user site packages, and `PYTHONPATH` cannot shadow the
+pinned Action package. It does not install dependencies, resolve evidence, use
+the network, or interpolate inputs into shell code.
 
 ## Installed CLI in CI
 

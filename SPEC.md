@@ -37,10 +37,13 @@ attestation layer, evidence downloader, universal score, or stable Python API.
 
 The repository root may be used as a composite GitHub Action. Its stable inputs
 are `record`, `policy`, and optional `format` (`text` by default). The action
-invokes the bundled Python source directly and preserves the `check` command's
-stdout, stderr, and exit code. Inputs cross the shell boundary through quoted
-environment variables, not interpolated command text. The action performs no
-install, dependency resolution, network request, evidence resolution, or write.
+invokes the bundled Python source through an isolated entry point and preserves
+the `check` command's stdout, stderr, and exit code. Python module discovery must
+not include the consumer checkout, user site packages, or `PYTHONPATH`; a file in
+an untrusted pull request cannot shadow the pinned `hypothesisctl` package.
+Inputs cross the shell boundary through quoted environment variables, not
+interpolated command text. The action performs no install, dependency resolution,
+network request, evidence resolution, or write.
 
 ## Bundled examples
 
