@@ -42,6 +42,12 @@ Publishing a release before both controls exist is prohibited. A pending
 publisher does not reserve the package name, so name availability must be
 rechecked immediately before the first release.
 
+The `publish` job is additionally fail-closed behind the repository variable
+`PYPI_PUBLISH_ENABLED == true`. Absence, deletion, or any other value skips the
+publisher even when a GitHub release is published. Enabling that variable is a
+separate PyPI-distribution action and requires its own explicit gate; approval to
+publish a GitHub release does not enable it.
+
 After publication, verify the PyPI project metadata, exact file hashes,
 attestation presence, clean installation from PyPI without dependency
 resolution, installed CLI behavior, and the GitHub Actions run. A release is not

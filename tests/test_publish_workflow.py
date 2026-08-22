@@ -31,6 +31,10 @@ class PublishWorkflowTest(unittest.TestCase):
         self.assertEqual(publish["permissions"], {"id-token": "write"})
         self.assertEqual(publish["needs"], "build")
         self.assertEqual(publish["environment"]["name"], "pypi")
+        self.assertEqual(
+            publish["if"],
+            "${{ vars.PYPI_PUBLISH_ENABLED == 'true' }}",
+        )
         self.assertFalse(any("checkout" in step.get("uses", "") for step in publish["steps"]))
 
     def test_every_action_is_immutable_and_publish_has_no_static_secret(self):
@@ -86,6 +90,8 @@ class PublishWorkflowTest(unittest.TestCase):
             "workflow: `publish.yml`",
             "environment: `pypi`",
             "require owner approval",
+            "PYPI_PUBLISH_ENABLED == true",
+            "separate PyPI-distribution action",
         ):
             self.assertIn(value, contract)
 
