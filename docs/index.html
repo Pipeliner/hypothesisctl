@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>hypothesisctl — fail-closed evidence gates</title>
+  <meta name="description" content="Fail-closed evidence gates for experiments, AI coding agents, and release workflows. Missing or blocked evidence never becomes success.">
+  <meta property="og:title" content="hypothesisctl — fail-closed evidence gates">
+  <meta property="og:description" content="Stop CI and AI agents from declaring victory before the evidence exists.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pipeliner.github.io/hypothesisctl/">
+  <meta name="twitter:card" content="summary">
+  <link rel="canonical" href="https://pipeliner.github.io/hypothesisctl/">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "hypothesisctl",
+    "url": "https://pipeliner.github.io/hypothesisctl/",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Cross-platform",
+    "softwareVersion": "0.2.0",
+    "codeRepository": "https://github.com/Pipeliner/hypothesisctl",
+    "license": "https://opensource.org/license/mit",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f7f3ea;
+      --muted: #b9b3a7;
+      --panel: #171a21;
+      --line: #313644;
+      --accent: #8cf0c7;
+      --accent-2: #f6c177;
+      --danger: #ff8f8f;
+      --blocked: #c4a7e7;
+      --wait: #f6c177;
+      --continue: #8cf0c7;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 78% 5%, rgba(140, 240, 199, .11), transparent 30rem),
+        #0d0f14;
+      color: var(--ink);
+      font: 17px/1.65 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    a { color: var(--accent); text-underline-offset: .2em; }
+    a:focus-visible, .button:focus-visible { outline: 3px solid var(--accent-2); outline-offset: 4px; }
+    .skip { position: absolute; left: -9999px; top: .5rem; }
+    .skip:focus { left: .75rem; z-index: 2; background: var(--panel); padding: .6rem; }
+    .wrap { width: min(1120px, calc(100% - 2rem)); margin: 0 auto; }
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 0; }
+    nav strong { letter-spacing: -.03em; }
+    nav div { display: flex; gap: 1.1rem; }
+    nav a { color: var(--muted); text-decoration: none; }
+    nav a:hover { color: var(--ink); }
+    header { padding: 6rem 0 4.5rem; }
+    .eyebrow { color: var(--accent); font: 700 .78rem/1.2 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .16em; text-transform: uppercase; }
+    h1 { max-width: 900px; margin: .8rem 0 1.3rem; font-size: clamp(3rem, 9vw, 6.8rem); line-height: .94; letter-spacing: -.065em; }
+    .lede { max-width: 760px; margin: 0; color: var(--muted); font-size: clamp(1.15rem, 3vw, 1.45rem); }
+    .actions { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 2rem; }
+    .button { display: inline-block; border: 1px solid var(--line); border-radius: .5rem; padding: .72rem 1rem; color: var(--ink); text-decoration: none; font-weight: 700; }
+    .button.primary { border-color: var(--accent); background: var(--accent); color: #082018; }
+    section { padding: 3.5rem 0; border-top: 1px solid var(--line); }
+    h2 { margin: 0 0 1.4rem; font-size: clamp(1.8rem, 5vw, 3rem); line-height: 1.1; letter-spacing: -.04em; }
+    h3 { margin-top: 0; }
+    .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .8rem; }
+    .card { min-width: 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: .7rem; background: var(--panel); }
+    .decision { font: 800 .85rem/1.2 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .08em; }
+    .kill { color: var(--danger); }
+    .blocked { color: var(--blocked); }
+    .wait { color: var(--wait); }
+    .continue { color: var(--continue); }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+    pre { overflow-x: auto; margin: 1.2rem 0 0; padding: 1.3rem; border: 1px solid var(--line); border-radius: .7rem; background: #090b0f; color: #e8e4dc; }
+    .two { display: grid; grid-template-columns: 1.1fr .9fr; gap: 2rem; align-items: start; }
+    .quiet { color: var(--muted); }
+    ul { padding-left: 1.2rem; }
+    footer { padding: 2.5rem 0 4rem; color: var(--muted); }
+    @media (max-width: 760px) {
+      header { padding-top: 3.5rem; }
+      .grid, .two { grid-template-columns: 1fr; }
+      nav div { gap: .7rem; font-size: .9rem; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <nav class="wrap" aria-label="Primary navigation">
+    <strong>hypothesisctl</strong>
+    <div>
+      <a href="https://github.com/Pipeliner/hypothesisctl">GitHub</a>
+      <a href="https://github.com/Pipeliner/hypothesisctl/releases/tag/v0.2.0">v0.2.0</a>
+      <a href="#use">Use it</a>
+    </div>
+  </nav>
+
+  <main id="main">
+    <header class="wrap">
+      <div class="eyebrow">Offline · deterministic · zero runtime dependencies</div>
+      <h1>Evidence first.<br>Victory later.</h1>
+      <p class="lede">Stop CI—and AI coding agents—from declaring success while required evidence is failed, blocked, unknown, or invalid.</p>
+      <div class="actions">
+        <a class="button primary" href="https://github.com/Pipeliner/hypothesisctl">View the source</a>
+        <a class="button" href="https://github.com/Pipeliner/hypothesisctl/blob/main/examples/agent-completion.json">See the agent gate</a>
+      </div>
+    </header>
+
+    <section>
+      <div class="wrap">
+        <h2>Four states. No optimistic blur.</h2>
+        <div class="grid">
+          <article class="card"><div class="decision kill">KILL · 4</div><p>At least one required gate failed.</p></article>
+          <article class="card"><div class="decision blocked">BLOCKED · 6</div><p>No failure, but required work cannot proceed.</p></article>
+          <article class="card"><div class="decision wait">WAIT · 5</div><p>No failure or block, but evidence is still unknown.</p></article>
+          <article class="card"><div class="decision continue">CONTINUE · 0</div><p>Every required gate passed with valid coverage.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="use">
+      <div class="wrap two">
+        <div>
+          <div class="eyebrow">GitHub Action</div>
+          <h2>One gate in your workflow.</h2>
+          <p class="quiet">The composite Action runs bundled Python source directly. It installs nothing, uses no telemetry, and preserves fail-closed exit codes.</p>
+        </div>
+        <pre><code>permissions:
+  contents: read
+
+steps:
+  - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+  - uses: Pipeliner/hypothesisctl@1722321620d8c297562bcf20ec1bd63057407df1
+    with:
+      record: hypothesis.json
+      policy: merge</code></pre>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap two">
+        <div>
+          <div class="eyebrow">Designed for falsification</div>
+          <h2>Make “not yet” machine-readable.</h2>
+        </div>
+        <div>
+          <ul>
+            <li>Gate an AI-generated change on tests and independent review.</li>
+            <li>Gate an experiment on preregistered evidence and coverage.</li>
+            <li>Gate a release on explicit technical and commercial criteria.</li>
+          </ul>
+          <p class="quiet">The CLI validates record structure and deterministic policy semantics. It does not fetch evidence, verify referenced bytes, or prove that a user's assertions are true.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2>Small enough to audit.</h2>
+        <p class="lede">MIT licensed, dependency-free at runtime, strict JSON, stable CI exit codes, and no network access in the CLI.</p>
+        <div class="actions">
+          <a class="button primary" href="https://github.com/Pipeliner/hypothesisctl">Read the README</a>
+          <a class="button" href="https://github.com/Pipeliner/hypothesisctl/blob/main/SECURITY.md">Security policy</a>
+          <a class="button" href="https://github.com/Pipeliner/hypothesisctl/blob/main/LICENSE">MIT license</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap">hypothesisctl is experimental 0.x software. Missing evidence never becomes success.</footer>
+</body>
+</html>

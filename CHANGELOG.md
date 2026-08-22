@@ -9,6 +9,8 @@ All notable changes are documented here.
 - Put the dependency-free GitHub Action path into the first-use README flow.
 - Add a release-only, OIDC-based PyPI publication workflow with isolated build
   and publish jobs, immutable Action pins, and a hash-pinned build backend.
+- Add a static, no-tracking GitHub Pages landing page with canonical metadata,
+  structured application data, robots policy, and a one-URL sitemap.
 
 ## 0.2.0 — 2026-08-22
 

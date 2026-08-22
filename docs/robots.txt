@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://pipeliner.github.io/hypothesisctl/sitemap.xml
