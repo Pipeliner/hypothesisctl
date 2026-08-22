@@ -132,14 +132,14 @@
         <div>
           <div class="eyebrow">GitHub Action</div>
           <h2>One gate in your workflow.</h2>
-          <p class="quiet">The composite Action runs bundled Python source directly. It installs nothing, uses no telemetry, and preserves fail-closed exit codes.</p>
+          <p class="quiet">The composite Action runs bundled Python source in isolated mode. Checkout modules cannot shadow it; it installs nothing, uses no telemetry, and preserves fail-closed exit codes.</p>
         </div>
         <pre><code>permissions:
   contents: read
 
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-  - uses: Pipeliner/hypothesisctl@1722321620d8c297562bcf20ec1bd63057407df1
+  - uses: Pipeliner/hypothesisctl@413f5377325082381b740ebc652c301f21d6a1d4
     with:
       record: hypothesis.json
       policy: merge</code></pre>

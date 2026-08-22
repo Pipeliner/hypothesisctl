@@ -105,6 +105,17 @@ class DiscoverySiteTest(unittest.TestCase):
         for forbidden in ("google-analytics", "gtag(", "segment.com", "hotjar", "cookie"):
             self.assertNotIn(forbidden, lowered)
 
+    def test_public_action_guidance_uses_the_isolated_entrypoint_commit(self):
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        page, _ = self.parsed_page()
+        fixed = "413f5377325082381b740ebc652c301f21d6a1d4"
+        vulnerable = "1722321620d8c297562bcf20ec1bd63057407df1"
+        self.assertIn(fixed, readme)
+        self.assertIn(fixed, page)
+        self.assertNotIn(vulnerable, readme)
+        self.assertNotIn(vulnerable, page)
+        self.assertIn("isolated mode", page)
+
     def test_robots_and_sitemap_cover_exactly_the_canonical_page(self):
         robots = (ROOT / "docs/robots.txt").read_text(encoding="utf-8")
         self.assertEqual(

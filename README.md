@@ -39,7 +39,7 @@ permissions:
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
   - name: Refuse an unsupported merge claim
-    uses: Pipeliner/hypothesisctl@1722321620d8c297562bcf20ec1bd63057407df1 # v0.2.0
+    uses: Pipeliner/hypothesisctl@413f5377325082381b740ebc652c301f21d6a1d4 # isolated Action entry point
     with:
       record: hypothesis.json
       policy: merge
@@ -146,7 +146,7 @@ permissions:
 steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
   - name: Enforce experiment gate
-    uses: Pipeliner/hypothesisctl@1722321620d8c297562bcf20ec1bd63057407df1 # v0.2.0 action
+    uses: Pipeliner/hypothesisctl@413f5377325082381b740ebc652c301f21d6a1d4 # isolated Action entry point
     with:
       record: hypothesis.json
       policy: ship
