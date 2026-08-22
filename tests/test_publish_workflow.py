@@ -33,7 +33,7 @@ class PublishWorkflowTest(unittest.TestCase):
         self.assertEqual(publish["environment"]["name"], "pypi")
         self.assertEqual(
             publish["if"],
-            "${{ vars.PYPI_PUBLISH_ENABLED == 'true' }}",
+            "${{ vars.PYPI_PUBLISH_RELEASE == github.event.release.tag_name }}",
         )
         self.assertFalse(any("checkout" in step.get("uses", "") for step in publish["steps"]))
 
@@ -90,8 +90,10 @@ class PublishWorkflowTest(unittest.TestCase):
             "workflow: `publish.yml`",
             "environment: `pypi`",
             "require owner approval",
-            "PYPI_PUBLISH_ENABLED == true",
-            "separate PyPI-distribution action",
+            "PYPI_PUBLISH_RELEASE",
+            "must exactly equal the release tag",
+            "separate",
+            "PyPI-distribution action",
         ):
             self.assertIn(value, contract)
 
