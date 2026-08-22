@@ -32,3 +32,12 @@ and it never overwrites an existing file.
 
 There is no server, network access, telemetry, YAML parser, plugin system,
 attestation layer, evidence downloader, universal score, or stable Python API.
+
+## Composite GitHub Action
+
+The repository root may be used as a composite GitHub Action. Its stable inputs
+are `record`, `policy`, and optional `format` (`text` by default). The action
+invokes the bundled Python source directly and preserves the `check` command's
+stdout, stderr, and exit code. Inputs cross the shell boundary through quoted
+environment variables, not interpolated command text. The action performs no
+install, dependency resolution, network request, evidence resolution, or write.

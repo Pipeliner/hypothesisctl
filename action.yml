@@ -1,0 +1,39 @@
+{
+  "name": "hypothesisctl decision gate",
+  "description": "Fail CI closed when experiment evidence is failed, blocked, unknown, or invalid",
+  "author": "Pipeliner",
+  "inputs": {
+    "record": {
+      "description": "Path to a hypothesisctl JSON record",
+      "required": true
+    },
+    "policy": {
+      "description": "Exact policy identifier to enforce",
+      "required": true
+    },
+    "format": {
+      "description": "Output format: text or json",
+      "required": false,
+      "default": "text"
+    }
+  },
+  "runs": {
+    "using": "composite",
+    "steps": [
+      {
+        "name": "Evaluate hypothesis gate",
+        "shell": "bash",
+        "env": {
+          "HYPOTHESISCTL_RECORD": "${{ inputs.record }}",
+          "HYPOTHESISCTL_POLICY": "${{ inputs.policy }}",
+          "HYPOTHESISCTL_FORMAT": "${{ inputs.format }}"
+        },
+        "run": "PYTHONPATH=\"$GITHUB_ACTION_PATH/src\" python3 -m hypothesisctl check \"$HYPOTHESISCTL_RECORD\" --policy \"$HYPOTHESISCTL_POLICY\" --format \"$HYPOTHESISCTL_FORMAT\""
+      }
+    ]
+  },
+  "branding": {
+    "icon": "check-circle",
+    "color": "purple"
+  }
+}

@@ -112,6 +112,11 @@ class CliTest(unittest.TestCase):
         self.assertEqual(evaluated.returncode, 0, evaluated.stderr)
         self.assertEqual(json.loads(evaluated.stdout)["decisions"]["ship"]["decision"], "WAIT")
 
+        release_example = ROOT / "examples" / "release-gate.json"
+        release = run_cli("check", release_example, "--policy", "publish", "--format", "json")
+        self.assertEqual(release.returncode, 0, release.stderr)
+        self.assertEqual(json.loads(release.stdout)["decision"], "CONTINUE")
+
 
 if __name__ == "__main__":
     unittest.main()

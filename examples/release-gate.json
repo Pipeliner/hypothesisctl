@@ -1,0 +1,34 @@
+{
+  "schema_version": "1",
+  "hypothesis": {
+    "id": "hypothesisctl-v0.1-release",
+    "statement": "The v0.1 release evidence meets the declared checks within the recorded coverage.",
+    "owner": "Pipeliner"
+  },
+  "gates": [
+    {
+      "id": "clean-room-tests",
+      "criterion": "The released artifact passes the frozen suite after isolated installation.",
+      "status": "pass",
+      "rationale": "The wheel passed 25 of 25 tests in an isolated Python 3.12 environment; a fresh public-tag clone separately passed 25 of 25 on Python 3.10.",
+      "evidence": [
+        {
+          "ref": "https://github.com/Pipeliner/hypothesisctl/releases/download/v0.1.0/hypothesisctl-0.1.0-py3-none-any.whl",
+          "sha256": "c2acc0850016807849220255ada4900192ee459718e16c92b553cfc8de3e584e"
+        }
+      ],
+      "coverage": {
+        "population": "Declared local wheel, public-clone, and GitHub-hosted release checks",
+        "observed": 6,
+        "unscanned": ["PyPy, Windows, macOS, and Python versions outside 3.10 through 3.13"],
+        "collection_failures": []
+      }
+    }
+  ],
+  "policies": [
+    {
+      "id": "publish",
+      "requires": ["clean-room-tests"]
+    }
+  ]
+}
