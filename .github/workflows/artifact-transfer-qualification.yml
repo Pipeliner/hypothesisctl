@@ -1,0 +1,88 @@
+{
+  "name": "artifact transfer qualification",
+  "on": {
+    "push": {
+      "branches": [
+        "main"
+      ]
+    },
+    "pull_request": {}
+  },
+  "permissions": {
+    "contents": "read"
+  },
+  "jobs": {
+    "artifact-transfer": {
+      "runs-on": "ubuntu-latest",
+      "steps": [
+        {
+          "name": "Check out source",
+          "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1"
+        },
+        {
+          "name": "Prepare distribution-shaped fixtures",
+          "run": "set -eu\nmkdir dist\nprintf 'wheel qualification payload\\n' > dist/hypothesisctl-qualification-py3-none-any.whl\nprintf 'source qualification payload\\n' > dist/hypothesisctl-qualification.tar.gz\nfind dist -maxdepth 1 -type f -print | LC_ALL=C sort > expected.paths\nsha256sum dist/* > expected.sha256"
+        },
+        {
+          "name": "Prove an absent path fails closed",
+          "id": "absent_upload",
+          "continue-on-error": true,
+          "uses": "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+          "with": {
+            "name": "absent-path-must-fail",
+            "path": "qualification-path-that-must-not-exist/",
+            "if-no-files-found": "error",
+            "retention-days": 1
+          }
+        },
+        {
+          "name": "Require absent-path failure",
+          "run": "test '${{ steps.absent_upload.outcome }}' = failure"
+        },
+        {
+          "name": "Upload distributions",
+          "id": "upload",
+          "uses": "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+          "with": {
+            "name": "python-package-distributions",
+            "path": "dist/",
+            "if-no-files-found": "error",
+            "retention-days": 1,
+            "compression-level": 0
+          }
+        },
+        {
+          "name": "Validate upload archive digest",
+          "env": {
+            "ARTIFACT_DIGEST": "${{ steps.upload.outputs.artifact-digest }}"
+          },
+          "run": "python -c \"import os,re,sys; value=os.environ.get('ARTIFACT_DIGEST',''); sys.exit(0 if re.fullmatch(r'[0-9a-f]{64}', value) else 'upload action did not return a SHA-256 artifact-digest')\""
+        },
+        {
+          "name": "Remove the source path from the download target",
+          "run": "mv dist source-dist"
+        },
+        {
+          "name": "Download distributions",
+          "uses": "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
+          "with": {
+            "name": "python-package-distributions",
+            "path": "dist/"
+          }
+        },
+        {
+          "name": "Verify distribution hash round trip",
+          "run": "find dist -maxdepth 1 -type f -print | LC_ALL=C sort > actual.paths\ncmp expected.paths actual.paths\nsha256sum --check expected.sha256"
+        },
+        {
+          "name": "Verify downloaded Actions declare Node 24",
+          "env": {
+            "UPLOAD_ACTION_YML": "${{ github.workspace }}/../../_actions/actions/upload-artifact/043fb46d1a93c77aae656e7c1c64a875d1fc6a0a/action.yml",
+            "DOWNLOAD_ACTION_YML": "${{ github.workspace }}/../../_actions/actions/download-artifact/3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c/action.yml"
+          },
+          "run": "ruby -e 'require \"yaml\"; ARGV.each { |path| runtime = YAML.safe_load(File.read(path)).dig(\"runs\", \"using\"); abort(\"#{path}: expected node24, got #{runtime.inspect}\") unless runtime == \"node24\" }' \"$UPLOAD_ACTION_YML\" \"$DOWNLOAD_ACTION_YML\""
+        }
+      ]
+    }
+  }
+}
