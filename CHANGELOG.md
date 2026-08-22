@@ -7,6 +7,8 @@ All notable changes are documented here.
 - Add a tested AI-agent completion example that stays `BLOCKED` until an
   independent review exists, with explicit zero-result coverage.
 - Put the dependency-free GitHub Action path into the first-use README flow.
+- Add a release-only, OIDC-based PyPI publication workflow with isolated build
+  and publish jobs, immutable Action pins, and a hash-pinned build backend.
 
 ## 0.2.0 — 2026-08-22
 
