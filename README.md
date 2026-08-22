@@ -1,6 +1,8 @@
 # hypothesisctl
 
-**Fail-closed decision gates for experiments.**
+[![test](https://github.com/Pipeliner/hypothesisctl/actions/workflows/test.yml/badge.svg)](https://github.com/Pipeliner/hypothesisctl/actions/workflows/test.yml)
+
+**Stop CI—and AI agents—from declaring victory before the evidence exists.**
 
 `hypothesisctl` turns a falsifiable hypothesis and its evidence gates into a
 deterministic CI decision. It refuses to call an experiment validated when
@@ -33,7 +35,7 @@ Python 3.10 or newer is required. The CLI has no runtime dependencies and does
 not use the network or telemetry. Install the tagged source from GitHub:
 
 ```bash
-python -m pip install "git+https://github.com/Pipeliner/hypothesisctl.git@v0.1.0"
+python -m pip install "git+https://github.com/Pipeliner/hypothesisctl.git@v0.2.0"
 ```
 
 For a source checkout:
@@ -101,7 +103,29 @@ Important semantics:
   multiline or terminal-control injection in text-mode CI output.
 - Only `init` writes a file, and it refuses to overwrite an existing path.
 
-## CI example
+## GitHub Action
+
+The repository is a dependency-free composite Action. Pin the immutable commit
+when the workflow is part of a supply-chain boundary:
+
+```yaml
+permissions:
+  contents: read
+
+steps:
+  - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+  - name: Enforce experiment gate
+    uses: Pipeliner/hypothesisctl@1722321620d8c297562bcf20ec1bd63057407df1 # v0.2.0 action
+    with:
+      record: hypothesis.json
+      policy: ship
+      format: json
+```
+
+The Action runs the bundled source directly. It does not install dependencies,
+resolve evidence, use the network, or interpolate inputs into shell code.
+
+## Installed CLI in CI
 
 ```yaml
 - name: Enforce experiment gate
@@ -113,9 +137,10 @@ therefore stops the job without special shell logic.
 
 ## Scope
 
-Version 0.1 is intentionally small: one local JSON record, one CLI, deterministic
-evaluation. It has no server, YAML parser, plugin system, evidence downloader,
-attestation layer, universal score, network access, or stable Python API.
+Version 0.2 is intentionally small: one local JSON record, one CLI, one composite
+Action, and deterministic evaluation. It has no server, YAML parser, plugin
+system, evidence downloader, attestation layer, universal score, network access,
+or stable Python API.
 
 Please report vulnerabilities according to [SECURITY.md](SECURITY.md). Contributions
 are welcome under [CONTRIBUTING.md](CONTRIBUTING.md).

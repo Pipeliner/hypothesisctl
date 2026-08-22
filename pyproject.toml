@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "hypothesisctl"
 version = "0.2.0"
-description = "Fail-closed decision gates for experiments"
+description = "Fail-closed evidence gates for experiments and AI-agent workflows"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
