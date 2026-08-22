@@ -4,6 +4,8 @@ All notable changes are documented here.
 
 ## Unreleased
 
+## 0.2.1 — 2026-08-22
+
 - Run the composite Action through an isolated bundled entry point so an
   untrusted checkout cannot shadow the pinned `hypothesisctl` package.
 - Add a tested AI-agent completion example that stays `BLOCKED` until an

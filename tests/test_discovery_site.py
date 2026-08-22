@@ -89,7 +89,7 @@ class DiscoverySiteTest(unittest.TestCase):
         _, page = self.parsed_page()
         required = {
             "https://github.com/Pipeliner/hypothesisctl",
-            "https://github.com/Pipeliner/hypothesisctl/releases/tag/v0.2.0",
+            "https://github.com/Pipeliner/hypothesisctl/releases/tag/v0.2.1",
             "https://github.com/Pipeliner/hypothesisctl/blob/main/examples/agent-completion.json",
             "https://github.com/Pipeliner/hypothesisctl/blob/main/SECURITY.md",
             "https://github.com/Pipeliner/hypothesisctl/blob/main/LICENSE",

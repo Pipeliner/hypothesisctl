@@ -89,6 +89,14 @@ class PublishWorkflowTest(unittest.TestCase):
         ):
             self.assertIn(value, contract)
 
+    def test_v021_metadata_and_release_notes_are_aligned(self):
+        pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+        self.assertRegex(pyproject, r'(?m)^version = "0\.2\.1"$')
+        changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+        self.assertIn("## 0.2.1 — 2026-08-22", changelog)
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("hypothesisctl.git@v0.2.1", readme)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -65,7 +65,7 @@ Python 3.10 or newer is required. The CLI has no runtime dependencies and does
 not use the network or telemetry. Install the tagged source from GitHub:
 
 ```bash
-python -m pip install "git+https://github.com/Pipeliner/hypothesisctl.git@v0.2.0"
+python -m pip install "git+https://github.com/Pipeliner/hypothesisctl.git@v0.2.1"
 ```
 
 For a source checkout:
