@@ -1,0 +1,47 @@
+{
+  "schema_version": "1",
+  "hypothesis": {
+    "id": "pricing-page-conversion",
+    "statement": "A clearer pricing page increases qualified trial starts by 15% without reducing activation.",
+    "owner": "growth"
+  },
+  "gates": [
+    {
+      "id": "sample-size",
+      "criterion": "At least 1000 qualified visitors were observed in each variant.",
+      "status": "pass",
+      "rationale": "Both variants exceeded the preregistered sample floor.",
+      "evidence": [
+        {
+          "ref": "evidence/experiment-export.json",
+          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ],
+      "coverage": {
+        "population": "Qualified pricing-page visitors during the preregistered window",
+        "observed": 2148,
+        "unscanned": ["Visitors excluded by the preregistered bot filter"],
+        "collection_failures": []
+      }
+    },
+    {
+      "id": "conversion-lift",
+      "criterion": "Qualified trial starts improve by at least 15%.",
+      "status": "unknown",
+      "rationale": "The analysis has not completed.",
+      "evidence": [],
+      "coverage": {
+        "population": "Qualified visitors in both variants",
+        "observed": 0,
+        "unscanned": ["All outcome rows pending analysis"],
+        "collection_failures": []
+      }
+    }
+  ],
+  "policies": [
+    {
+      "id": "ship",
+      "requires": ["sample-size", "conversion-lift"]
+    }
+  ]
+}

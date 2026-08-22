@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools==83.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hypothesisctl"
+version = "0.1.0"
+description = "Fail-closed decision gates for experiments"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{name = "Pipeliner"}]
+keywords = ["hypothesis", "experiments", "validation", "ci", "decision-gates"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dependencies = []
+
+[project.scripts]
+hypothesisctl = "hypothesisctl.cli:main"
+
+[project.urls]
+Repository = "https://github.com/Pipeliner/hypothesisctl"
+Issues = "https://github.com/Pipeliner/hypothesisctl/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
