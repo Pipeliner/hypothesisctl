@@ -1,0 +1,49 @@
+{
+  "schema_version": "1",
+  "hypothesis": {
+    "id": "agent-change-ready",
+    "statement": "The AI-agent-produced change is ready to merge.",
+    "owner": "platform-engineering"
+  },
+  "gates": [
+    {
+      "id": "acceptance-tests",
+      "criterion": "Every owner-approved acceptance check completes successfully.",
+      "status": "unknown",
+      "rationale": "The test job has not produced a result for this change.",
+      "evidence": [],
+      "coverage": {
+        "population": "Owner-approved acceptance checks for the proposed change",
+        "observed": 0,
+        "unscanned": [
+          "All acceptance checks are awaiting execution"
+        ],
+        "collection_failures": []
+      }
+    },
+    {
+      "id": "independent-review",
+      "criterion": "A reviewer other than the producing agent approves the exact change.",
+      "status": "blocked",
+      "rationale": "No independent reviewer is currently assigned.",
+      "evidence": [],
+      "coverage": {
+        "population": "Independent review of the exact proposed change",
+        "observed": 0,
+        "unscanned": [
+          "The proposed change has not received independent review"
+        ],
+        "collection_failures": []
+      }
+    }
+  ],
+  "policies": [
+    {
+      "id": "merge",
+      "requires": [
+        "acceptance-tests",
+        "independent-review"
+      ]
+    }
+  ]
+}

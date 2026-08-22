@@ -15,6 +15,36 @@ $ echo $?
 5
 ```
 
+Use it when an experiment, AI coding agent, or release process can produce a
+plausible “done” message before the required evidence is actually complete.
+
+## Try the AI-agent completion gate
+
+The bundled [agent-completion record](examples/agent-completion.json) asks whether
+an agent-produced change is ready to merge. Tests have not reported and no
+independent reviewer is assigned, so the two incomplete states remain distinct:
+
+```text
+$ hypothesisctl evaluate examples/agent-completion.json --policy merge
+merge: BLOCKED (blocked: independent-review)
+```
+
+In CI, use the repository directly as a dependency-free composite Action—there
+is no package-install step:
+
+```yaml
+permissions:
+  contents: read
+
+steps:
+  - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+  - name: Refuse an unsupported merge claim
+    uses: Pipeliner/hypothesisctl@1722321620d8c297562bcf20ec1bd63057407df1 # v0.2.0
+    with:
+      record: hypothesis.json
+      policy: merge
+```
+
 ## Why
 
 Experiment documents tend to blur four materially different states:
@@ -88,6 +118,7 @@ immutable evidence references, and coverage:
 ```
 
 See the complete [example](examples/product-hypothesis.json), the
+[AI-agent completion example](examples/agent-completion.json), the
 [v0.1 contract](SPEC.md), and the machine-readable
 [JSON Schema](schema/hypothesis-v1.schema.json).
 

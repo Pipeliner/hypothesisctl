@@ -1,9 +1,14 @@
 import json
+from pathlib import Path
 import unittest
 
 from hypothesisctl.core import ValidationError, evaluate, validate_record
+from hypothesisctl.strict_json import load_file
 
 from tests.helpers import DIGEST, cloned, gate, record
+
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 class CoreTest(unittest.TestCase):
@@ -118,6 +123,19 @@ class CoreTest(unittest.TestCase):
         self.assertEqual(list(result["decisions"]), ["second"])
         with self.assertRaises(ValidationError):
             evaluate(validate_record(candidate), "missing")
+
+    def test_agent_completion_example_is_an_executable_blocked_fixture(self):
+        candidate = validate_record(
+            load_file(ROOT / "examples" / "agent-completion.json")
+        )
+        decision = evaluate(candidate, "merge")["decisions"]["merge"]
+        self.assertEqual(decision["decision"], "BLOCKED")
+        self.assertEqual(decision["contributing_gates"], ["independent-review"])
+        review = next(
+            gate for gate in candidate["gates"] if gate["id"] == "independent-review"
+        )
+        self.assertEqual(review["coverage"]["observed"], 0)
+        self.assertTrue(review["coverage"]["unscanned"])
 
 
 if __name__ == "__main__":

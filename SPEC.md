@@ -41,3 +41,14 @@ invokes the bundled Python source directly and preserves the `check` command's
 stdout, stderr, and exit code. Inputs cross the shell boundary through quoted
 environment variables, not interpolated command text. The action performs no
 install, dependency resolution, network request, evidence resolution, or write.
+
+## Bundled examples
+
+Examples are executable contract fixtures, not illustrative JSON that may drift
+from the parser. In addition to the product-hypothesis and release-gate records,
+the repository includes `examples/agent-completion.json`. It models the claim
+that an AI-agent-produced change is ready to merge and must evaluate policy
+`merge` to `BLOCKED` while independent review is unavailable. The example must
+retain explicit zero-result coverage for that unavailable review and must be
+executed by the test suite through the same strict loader, validator, and policy
+evaluator as user records.

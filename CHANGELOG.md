@@ -2,6 +2,12 @@
 
 All notable changes are documented here.
 
+## Unreleased
+
+- Add a tested AI-agent completion example that stays `BLOCKED` until an
+  independent review exists, with explicit zero-result coverage.
+- Put the dependency-free GitHub Action path into the first-use README flow.
+
 ## 0.2.0 — 2026-08-22
 
 - Add a dependency-free composite GitHub Action that runs the bundled CLI.
